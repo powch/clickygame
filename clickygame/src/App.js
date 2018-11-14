@@ -16,16 +16,36 @@ class App extends Component {
     clickCards: []
   }
 
+  handleClickEvent = event => {
+    const { id } = event.target;
+
+    console.log(event);
+
+    const newClick = this.state.clickCards;
+    newClick.push(id);
+
+    const shuffled = this.state.cards.map(a => [Math.random(), a]).sort((a,b) => a[0] - b[0]).map(a => a[1]);
+
+    this.setState({
+      cards: shuffled,
+      clickCards: newClick
+    });
+  }
+
   render() {
     return(
       <Wrapper>
-        <Navbar score={this.state.score} highScore={this.state.highScore} />
+        <Navbar 
+          score={this.state.score} 
+          highScore={this.state.highScore} 
+        />
         <Jumbotron />
         <Container>
           <Row>
             {this.state.cards.map(card => (
               <Col key={card.id}>
                 <Card
+                  onClick={this.handleClickEvent}
                   key={card.id}
                   url={card.url}
                   alt={card.name}
