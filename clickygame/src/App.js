@@ -6,6 +6,7 @@ import Container from './components/Container';
 import Col from './components/Col';
 import Row from './components/Row';
 import Card from './components/Card';
+import Jumbotron from './components/Jumbotron/Jumbotron';
 
 class App extends Component {
   state={
@@ -19,6 +20,7 @@ class App extends Component {
     return(
       <Wrapper>
         <Navbar score={this.state.score} highScore={this.state.highScore} />
+        <Jumbotron />
         <Container>
           <Row>
             {this.state.cards.map(card => (
