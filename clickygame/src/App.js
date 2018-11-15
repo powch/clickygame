@@ -9,43 +9,68 @@ import Card from './components/Card';
 import Jumbotron from './components/Jumbotron/Jumbotron';
 
 class App extends Component {
-  state={
+  state = {
     cards,
     score: 0,
     highScore: 0,
-    clickCards: []
-  }
+    clickedCards: [],
+    correctGuess: true
+  };
+
+  resetState = () => {
+    this.setState({
+      score: 0,
+      highScore: 0,
+      clickedCards: []
+    });
+  };
 
   handleClickEvent = event => {
     const { id } = event.target;
+    const newClick = this.state.clickedCards;
+    const shuffled = this.state.cards
+      .map(a => [Math.random(), a])
+      .sort((a, b) => a[0] - b[0])
+      .map(a => a[1]);
 
-    console.log(event);
+    console.log(newClick);
 
-    const newClick = this.state.clickCards;
-    newClick.push(id);
+    if (!newClick.length) {
+      newClick.push(id);
+    } else {
+      let correct = true;
 
-    const shuffled = this.state.cards.map(a => [Math.random(), a]).sort((a,b) => a[0] - b[0]).map(a => a[1]);
+      newClick.forEach(cardID => {
+        if (correct) {
+          if (cardID === id) {
+            correct = false;
+          }
+        }
+      });
 
-    this.setState({
-      cards: shuffled,
-      clickCards: newClick
-    });
-  }
+      if (correct) {
+        this.setState({
+          cards: shuffled,
+          score: this.state.score + 1
+        });
+      } else {
+        this.resetState();
+      }
+    }
+  };
 
   render() {
-    return(
+    return (
       <Wrapper>
-        <Navbar 
-          score={this.state.score} 
-          highScore={this.state.highScore} 
-        />
+        <Navbar score={this.state.score} highScore={this.state.highScore} />
         <Jumbotron />
         <Container>
           <Row>
             {this.state.cards.map(card => (
               <Col key={card.id}>
                 <Card
-                  onClick={this.handleClickEvent}
+                  handleClickEvent={this.handleClickEvent}
+                  id={card.id}
                   key={card.id}
                   url={card.url}
                   alt={card.name}
@@ -55,9 +80,8 @@ class App extends Component {
           </Row>
         </Container>
       </Wrapper>
-    )
+    );
   }
-  
 }
 
 export default App;
