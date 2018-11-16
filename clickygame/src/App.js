@@ -17,47 +17,41 @@ class App extends Component {
     correctGuess: true
   };
 
-  resetState = () => {
+  incorrectGuess = () => {
+    const score = this.state.score;
+    const highScore = this.state.highScore;
+
     this.setState({
       score: 0,
-      highScore: 0,
-      clickedCards: []
+      highScore: (score <= highScore) ? highScore : score,
+      clickedCards: [],
+      correctGuess: false
     });
   };
 
   handleClickEvent = event => {
     const { id } = event.target;
-    const newClick = this.state.clickedCards;
+    const newClickedArr = this.state.clickedCards;
     const shuffled = this.state.cards
       .map(a => [Math.random(), a])
       .sort((a, b) => a[0] - b[0])
       .map(a => a[1]);
+    const found = newClickedArr.find(cardID => cardID === id);
 
-    console.log(newClick);
-
-    if (!newClick.length) {
-      newClick.push(id);
+    if (newClickedArr.length && found) {
+      this.incorrectGuess();
     } else {
-      let correct = true;
-
-      newClick.forEach(cardID => {
-        if (correct) {
-          if (cardID === id) {
-            correct = false;
-          }
-        }
+      newClickedArr.push(id);
+      console.log(newClickedArr);      
+      this.setState({
+        cards: shuffled,
+        clickedCards: newClickedArr,
+        score: this.state.score + 1,
+        correctGuess: true
       });
-
-      if (correct) {
-        this.setState({
-          cards: shuffled,
-          score: this.state.score + 1
-        });
-      } else {
-        this.resetState();
-      }
     }
   };
+  
 
   render() {
     return (
