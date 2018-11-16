@@ -14,7 +14,8 @@ class App extends Component {
     score: 0,
     highScore: 0,
     clickedCards: [],
-    correctGuess: true
+    correctGuess: true,
+    started: false
   };
 
   incorrectGuess = () => {
@@ -42,12 +43,12 @@ class App extends Component {
       this.incorrectGuess();
     } else {
       newClickedArr.push(id);
-      console.log(newClickedArr);      
       this.setState({
         cards: shuffled,
         clickedCards: newClickedArr,
         score: this.state.score + 1,
-        correctGuess: true
+        correctGuess: true,
+        started: true
       });
     }
   };
@@ -57,7 +58,10 @@ class App extends Component {
     return (
       <Wrapper>
         <Navbar score={this.state.score} highScore={this.state.highScore} />
-        <Jumbotron />
+        <Jumbotron
+          correctGuess={this.state.correctGuess}
+          started={this.state.started}
+        />
         <Container>
           <Row>
             {this.state.cards.map(card => (
